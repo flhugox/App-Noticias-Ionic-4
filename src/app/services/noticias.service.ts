@@ -11,7 +11,9 @@ const headers= new HttpHeaders({
   providedIn: 'root'
 })
 export class NoticiasService {
-
+  headLinesPage=0;
+  categoriaActual='';
+  categoriaPage=0;
   constructor(private http:HttpClient ) { }
   private ejecutarQuery<T>(query:string){
     query=apiUrl+query;
@@ -19,11 +21,18 @@ export class NoticiasService {
 
   }
   getTopHeadLine(){
-   return  this.ejecutarQuery<RespuestaTopHeadlines>(`/top-headlines?country=mx`);
+    this.headLinesPage++;
+   return  this.ejecutarQuery<RespuestaTopHeadlines>(`/top-headlines?country=mx&page=${this.headLinesPage}`);
   //   return this.http.get<RespuestaTopHeadlines>(`https://newsapi.org/v2/everything?q=bitcoin&from=2019-03-28&sortBy=publishedAt&apiKey=dd8f32ea64ec4e56bcf1c81cbf1eedcc`);
   }
   getTopHeadLineCategorias(categoria:string){
-    return  this.ejecutarQuery<RespuestaTopHeadlines>(`/top-headlines?country=mx&category=${categoria}`);
+    if(this.categoriaActual===categoria){
+      this.categoriaPage++;
+    }else{
+      this.categoriaPage=1;
+      this.categoriaActual=categoria;
+    }
+    return  this.ejecutarQuery<RespuestaTopHeadlines>(`/top-headlines?country=mx&category=${categoria}&page=${this.categoriaPage}`);
   //  return this.http.get(`https://newsapi.org/v2/top-headlines?country=mx&category=business&apiKey=dd8f32ea64ec4e56bcf1c81cbf1eedcc`);
   }
 
